@@ -59,8 +59,8 @@ const DocAlertLogo = ({ size = 40, showText = true, textSize = 'text-2xl' }) => 
       </svg>
       {showText && (
         <span className={`font-extrabold tracking-tight ${textSize}`}>
-          <span className="text-blue-800">Doc</span>
-          <span className="text-blue-500">Alert</span>
+          <span className="text-blue-600">Doc</span>
+          <span className="text-blue-400">Alert</span>
         </span>
       )}
     </div>

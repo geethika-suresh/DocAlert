@@ -80,47 +80,7 @@ const HelpPage = () => (
       </div>
     </div>
 
-    {/* Tech Stack */}
-    <div className="card p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-        <Shield size={18} className="text-green-600"/> Technology Stack
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { label: 'Frontend',   value: 'React + Vite + Tailwind CSS' },
-          { label: 'Backend',    value: 'Node.js + Express.js' },
-          { label: 'Database',   value: 'MongoDB Atlas (free tier)' },
-          { label: 'Deployment', value: 'Vercel (client) + Render (server)' },
-          { label: 'Storage',    value: 'LocalStorage + IndexedDB' },
-          { label: 'AI Layer',   value: 'Rule-based (no API key)' },
-          { label: 'Auth',       value: 'JWT + bcrypt' },
-          { label: 'Cost',       value: '100% Free' },
-        ].map(({ label, value }) => (
-          <div key={label} className="bg-gray-50 rounded-xl p-3">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{label}</p>
-            <p className="text-sm font-semibold text-gray-800">{value}</p>
-          </div>
-        ))}
-      </div>
-    </div>
 
-    {/* About */}
-    <div className="bg-gradient-to-br from-blue-800 to-blue-900 rounded-2xl p-8 text-white text-center">
-      <DocAlertLogo size={40} showText={false}/>
-      <h2 className="text-2xl font-bold mt-4 mb-2">DocAlert</h2>
-      <p className="text-blue-200 text-sm max-w-lg mx-auto mb-4 leading-relaxed">
-        Built as a Final Year Computer Science Engineering Project. DocAlert demonstrates practical web development, client-side data management, date-based logic, validation, and responsive design.
-      </p>
-      <div className="flex flex-wrap justify-center gap-3 text-xs">
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">React 18</span>
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">Node.js</span>
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">MongoDB</span>
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">Tailwind CSS</span>
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">Recharts</span>
-        <span className="bg-white/10 px-3 py-1.5 rounded-full border border-white/20">Lucide Icons</span>
-      </div>
-      <p className="mt-5 text-blue-300 text-xs">© 2026 DocAlert — Free, Open Source, No Paid Services Required</p>
-    </div>
   </div>
 );
 
