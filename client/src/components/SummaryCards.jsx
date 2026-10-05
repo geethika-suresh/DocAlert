@@ -1,11 +1,12 @@
 // SRS FR2: Dashboard displays summary counts for document statuses
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FileText, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 
 const SummaryCard = ({ label, count, icon, colorClass, bgClass, borderClass, onClick }) => (
   <button
     onClick={onClick}
-    className={`card p-5 flex items-center gap-4 w-full text-left border-t-4 ${borderClass} hover:shadow-lg transition-all duration-200 active:scale-95`}
+    className={`card p-5 flex items-center gap-4 w-full text-left border-t-4 ${borderClass} hover:shadow-lg transition-all duration-200 active:scale-95 cursor-pointer`}
   >
     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${bgClass} flex-shrink-0`}>
       <span className={colorClass}>{icon}</span>
@@ -18,6 +19,7 @@ const SummaryCard = ({ label, count, icon, colorClass, bgClass, borderClass, onC
 );
 
 const SummaryCards = ({ summary, onFilter }) => {
+  const navigate = useNavigate();
   const { total = 0, active = 0, expiringSoon = 0, expired = 0 } = summary || {};
 
   const cards = [
@@ -27,10 +29,17 @@ const SummaryCards = ({ summary, onFilter }) => {
     { label: 'Expired',         count: expired,      icon: <AlertTriangle size={22}/>,  colorClass: 'text-red-600',    bgClass: 'bg-red-50',    borderClass: 'border-red-400',    filter: 'Expired' },
   ];
 
+  const handleClick = (filter) => {
+    onFilter?.(filter);
+    // Navigate to documents page with status filter as query param
+    const param = filter === 'All' ? '' : `?status=${encodeURIComponent(filter)}`;
+    navigate(`/documents${param}`);
+  };
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card) => (
-        <SummaryCard key={card.label} {...card} onClick={() => onFilter?.(card.filter)} />
+        <SummaryCard key={card.label} {...card} onClick={() => handleClick(card.filter)} />
       ))}
     </div>
   );

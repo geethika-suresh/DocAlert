@@ -1,7 +1,7 @@
 // SRS FR2: Document Dashboard — all documents, status badges, summary
 // SRS FR4: Search & Filter integrated
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Plus, RefreshCw, LayoutGrid, List } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useDocuments } from '../context/DocumentContext.jsx';
@@ -18,19 +18,28 @@ const formatDate = (d) =>
 const DocumentsPage = () => {
   const { documents, summary, loading, reminderPeriod, fetchDocuments, deleteDocument } = useDocuments();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch]         = useState('');
   const [category, setCategory]     = useState('All');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'All');
   const [viewMode, setViewMode]     = useState('grid'); // grid | list
   const [deleteModal, setDeleteModal] = useState({ open: false, id: null, name: '' });
   const [deleting, setDeleting]     = useState(false);
 
+  // Sync status filter when query param changes (e.g. navigating from dashboard cards)
+  useEffect(() => {
+    const s = searchParams.get('status');
+    setStatusFilter(s || 'All');
+  }, [searchParams]);
+
   useEffect(() => { fetchDocuments(); }, []);
 
-  // FR4: In-memory search + filter
+  // FR4: In-memory search + filter (by name, category, and status)
   const filtered = documents.filter(doc => {
     const matchSearch   = !search.trim() || doc.name.toLowerCase().includes(search.toLowerCase().trim());
     const matchCategory = category === 'All' || doc.category === category;
-    return matchSearch && matchCategory;
+    const matchStatus   = statusFilter === 'All' || doc.status === statusFilter;
+    return matchSearch && matchCategory && matchStatus;
   });
 
   const handleDelete = useCallback(async () => {
@@ -94,9 +103,28 @@ const DocumentsPage = () => {
         category={category}
         onSearchChange={setSearch}
         onCategoryChange={setCategory}
-        onClear={() => { setSearch(''); setCategory('All'); }}
+        onClear={() => { setSearch(''); setCategory('All'); setStatusFilter('All'); setSearchParams({}); }}
         resultCount={filtered.length}
       />
+
+      {/* Status filter badge (set from dashboard cards) */}
+      {statusFilter !== 'All' && (
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">Filtered by status:</span>
+          <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full
+            ${statusFilter === 'Active'        ? 'bg-green-100 text-green-700' :
+              statusFilter === 'Expiring Soon' ? 'bg-amber-100 text-amber-700' :
+              'bg-red-100 text-red-700'}`}>
+            {statusFilter}
+          </span>
+          <button
+            onClick={() => { setStatusFilter('All'); setSearchParams({}); }}
+            className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+          >
+            Clear ×
+          </button>
+        </div>
+      )}
 
       {/* Document list */}
       {loading ? (
@@ -106,7 +134,7 @@ const DocumentsPage = () => {
       ) : filtered.length === 0 ? (
         documents.length === 0
           ? <EmptyState type="documents"/>
-          : <EmptyState type="search" search={search} category={category} onClear={() => { setSearch(''); setCategory('All'); }}/>
+          : <EmptyState type="search" search={search} category={category} onClear={() => { setSearch(''); setCategory('All'); setStatusFilter('All'); setSearchParams({}); }}/>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(doc => (
